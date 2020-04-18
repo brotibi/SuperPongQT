@@ -12,28 +12,32 @@ Game::Game(){
     this->scene->setSceneRect(0,0,800, 600);
     this->player1 = new Player(scene->width()/2,scene->height()/2,0,0);
     this->player2 = new Player(0,0,0,0);
-    scene->addItem(player1);
+
     scene->addItem(this);
     this->timeDisplay = new QGraphicsTextItem;
     timeDisplay->setPlainText(QString("Time: ") + QString::number(time));
     timeDisplay->setDefaultTextColor(Qt::red);
     timeDisplay->setFont(QFont("times", 16));
 
-    scene->addItem(timeDisplay);
 
     this->setFlag(QGraphicsItem::ItemIsFocusable);
     this->setFocus();
     //qDebug() << "You just pressed a key in the controller";
     this->balls.push_back(new Ball(scene->width()/4, scene->height()/4, 5, 5));
-    scene->addItem(balls[balls.size() - 1]);
+
+    this->balls[balls.size() - 1]->setBrush(Qt::green);
     timer = new QTimer();
     connect(timer, SIGNAL(timeout()),this, SLOT(run()));
-
-    timer->start(10);
-
+    this->player1->setBrush(Qt::red);
     width = 800;
     height = 600;
     gameOverText = new QGraphicsTextItem();
+    titleText = new QGraphicsTextItem();
+    titleText->setPlainText(QString("SUPER PONG \n \n press enter to start"));
+    titleText->setDefaultTextColor(Qt::green);
+    scene->addItem(titleText);
+    titleText->setFont(QFont("times", 40));
+    titleText->setPos(width/6,height/3);
 }
 
 Game::Game(int width, int height): Game(){
@@ -55,8 +59,24 @@ Game::~Game(){
     });
 }
 
+void Game::start(){
+    scene->addItem(player1);
+    scene->addItem(timeDisplay);
+    timer->start(10);
+    scene->addItem(balls[balls.size() - 1]);
+    scene->removeItem(titleText);
+}
+
 void Game::keyPressEvent(QKeyEvent *event) {
     qDebug() << "You just pressed a key in the controller";
+
+    if(!gameStarted && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)){
+
+        gameStarted = true;
+        this->start();
+    }
+
+
     if(event->key() == Qt::Key_Left){
         this->player1->moveLeft();
     }
@@ -87,6 +107,7 @@ void Game::keyPressEvent(QKeyEvent *event) {
         scene->addItem(balls[balls.size() - 1]);
         scene->removeItem(gameOverText);
         time = 0;
+        this->balls[balls.size() - 1]->setBrush(Qt::green);
     }
 
     this->player1->update();
@@ -99,11 +120,16 @@ bool Game::checkPlayerCollision(){
 
 void Game::run(){
   //  while (1) {
+    this->setFlag(QGraphicsItem::ItemIsFocusable);
+    this->setFocus();
 
     if(time%1000 == 0 && time != 0){ // Spawns another ball every 10 secs
         this->balls.push_back(new Ball(scene->width()/4, scene->height()/4, 5, 5));
+        this->balls[balls.size() - 1]->setBrush(Qt::green);
         scene->addItem(balls[balls.size() - 1]);
     }
+
+
 
     this->player1->update();
     this->player2->update(); // If there was a player 2 it would update player2s position

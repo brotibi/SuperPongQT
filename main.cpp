@@ -4,6 +4,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
+#include <QGraphicsItem>
 
 #include <Game.h>
 
@@ -15,6 +16,8 @@ int main(int argc, char *argv[])
     //rect->setRect(0,0,100,100);
     //scene->addItem(rect);
     Game  game;
+    game.setFlag(QGraphicsItem::ItemIsFocusable);
+    game.setFocus();
     //QGraphicsView * view  = new QGraphicsView(game.getScene());
     QGraphicsView view;
 

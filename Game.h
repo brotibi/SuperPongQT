@@ -21,12 +21,14 @@ private:
     QGraphicsScene * scene; // The Game scene
     QGraphicsTextItem * timeDisplay; // The text that displays the time
     QGraphicsTextItem * gameOverText; // The game over text which displays when the game is over
+    QGraphicsTextItem * titleText; // This is the title text;
     QTimer * timer; // The timer used for the main gain "loop"
     int width; // The pixel height of the scene
     int height; // The pixel height of the scene
     bool isGameOver = false; // Boolean telling if the game is over
     bool checkPlayerCollision(); // Checks if the player collides with the ball
-    //void start(); // Starts the Game
+    bool gameStarted = false; // Has the Game started?
+    void start(); // Starts the Game
     void keyPressEvent(QKeyEvent *event); // Key press listener that listens for keys being pressed
 public:
     Game(); // No-args constructor for creating the game
